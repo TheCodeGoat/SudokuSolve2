@@ -1,2 +1,90 @@
-﻿// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Hello, World!");
+﻿using System;
+
+namespace Sudoku {
+
+    struct Location {
+
+        public int x, y;
+        public Location(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+
+    }
+
+    class Cell {
+
+        public List<int> domain;
+        public int value;
+        public bool isFixed;
+
+        public Cell(List<int> domain, int value, bool isFixed) {
+            this.domain = domain;
+            this.value = value;
+            this.isFixed = isFixed;
+        }
+
+        public int getNextElementInDomain(int startValue) {
+
+            foreach (int domainValue in domain) {
+                if (domainValue >= startValue) {
+                    return domainValue;
+                }
+            }
+
+        }
+
+    }
+
+    class CBacktrackingNode {
+
+        public CBacktrackingNode parent;
+        public List<CBacktrackingNode> children;
+        public Dictionary<Location, Cell> cells;
+
+        CBacktrackingNode(CBacktrackingNode parent, List<CBacktrackingNode> children, Dictionary<Location, Cell> cells) {
+            this.parent = parent;
+            this.children = children;
+            this.cells = cells;
+        }
+
+    }
+
+    class Program {
+
+        public static List<List<int>> convertRawSudokuInput(String rawInput) {
+
+            // Split input on spaces and initialize a variable for the rows
+            string[] input = rawInput.Trim().Split(' ');
+            List<List<int>> rows = new List<List<int>>();
+
+            // Populate the 'rows' variable with the input data
+            for (int row = 0; row < 9; row++) {
+
+                rows.Add(new List<int>());
+
+                for (int column = 0; column < 9; column++) {
+
+                    int inputValue = int.Parse(input[row * 9 + column]);
+                    rows[row].Add(inputValue);
+
+                }
+
+            }
+
+            return rows;
+
+        }
+
+        public static void Main(String[] args) {
+
+            String rawSudokuInput = Console.ReadLine();
+            List<List<int>> sudokuInput = convertRawSudokuInput(rawSudokuInput);
+            Sudoku sudoku = new Sudoku(sudokuInput);
+            sudoku.solve();
+
+        }
+
+    }
+
+}
