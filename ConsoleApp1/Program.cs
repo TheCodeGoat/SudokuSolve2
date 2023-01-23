@@ -10,6 +10,10 @@ namespace Sudoku {
             this.y = y;
         }
 
+        public bool equals(Location location) {
+            return x == location.x && y == location.y;
+        }
+
     }
 
     class Cell {
@@ -32,20 +36,8 @@ namespace Sudoku {
                 }
             }
 
-        }
+            return 0;
 
-    }
-
-    class CBacktrackingNode {
-
-        public CBacktrackingNode parent;
-        public List<CBacktrackingNode> children;
-        public Dictionary<Location, Cell> cells;
-
-        CBacktrackingNode(CBacktrackingNode parent, List<CBacktrackingNode> children, Dictionary<Location, Cell> cells) {
-            this.parent = parent;
-            this.children = children;
-            this.cells = cells;
         }
 
     }

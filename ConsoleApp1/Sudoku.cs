@@ -34,12 +34,83 @@
 
         }
 
+        private Dictionary<Location, Cell> getAllCellsInRow(int row) {
+
+            Dictionary<Location, Cell> cellsInRow = new Dictionary<Location, Cell>();
+
+            foreach (KeyValuePair<Location, Cell> pair in cells) {
+
+                Location location = pair.Key;
+                Cell cell = pair.Value;
+
+                if (location.y == row) {
+                    cellsInRow[location] = cell;
+                }
+
+            }
+
+            return cellsInRow;
+
+        }
+
+        private Dictionary<Location, Cell> getAllCellsInColumn(int column) {
+
+            Dictionary<Location, Cell> cellsInColumn = new Dictionary<Location, Cell>();
+
+            foreach (KeyValuePair<Location, Cell> pair in cells) {
+
+                Location location = pair.Key;
+                Cell cell = pair.Value;
+
+                if (location.x == column) {
+                    cellsInColumn[location] = cell;
+                }
+
+            }
+
+            return cellsInColumn;
+
+        }
+
+        private Dictionary<Location, Cell> getAllCellsInBlockOfCell(Location cellLocation) {
+
+            Location getBlockLocationFromCellLocation(Location cellLocation) {
+                return new Location(
+                (int)Math.Floor((decimal)(cellLocation.x / 3)),
+                (int)Math.Floor((decimal)(cellLocation.y / 3)));
+            }
+
+            Dictionary<Location, Cell> cellsInBlock = new Dictionary<Location, Cell>();
+            Location blockLocation = getBlockLocationFromCellLocation(cellLocation);
+
+            foreach (KeyValuePair<Location, Cell> pair in cells) {
+
+                Location location = pair.Key;
+                Cell cell = pair.Value;
+
+                if (getBlockLocationFromCellLocation(location).equals(blockLocation)) {
+                    cellsInBlock[location] = cell;
+                }
+
+            }
+
+            return cellsInBlock;
+
+        }
+
         private void makeNodeConsistent() {
 
             // TODO:
             //      Make data node consistent
             //      Update currentCellLocation and currentValue
 
+            foreach (KeyValuePair<Location, Cell> cellPair in cells) {
+            
+                foreach (KeyValuePair<Location, Cell> rowCellPair in getAllCellsInRow(cellPair.Key.y)) {
+                    
+                }
+
+            }
 
         }
 
