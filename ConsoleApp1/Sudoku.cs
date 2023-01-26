@@ -110,9 +110,27 @@
 
         private bool forwardCheckIsValid() {
 
-            // TODO: check if there is a domain that is empty
-            // (using currentCellLocation because we should only check the rows,columns and block that was last affected)
+            // Check if there is a domain that is empty for cells in the same row, column, and block as the current cell
 
+            foreach (Cell rowCell in getAllCellsInRow(currentCellLocation.y)) {
+                if (rowCell.domain.Count == 0 && !rowCell.isFixed) {
+                    return false;
+                }
+            }
+
+            foreach (Cell columnCell in getAllCellsInColumn(currentCellLocation.x)) {
+                if (columnCell.domain.Count == 0 && !columnCell.isFixed) {
+                    return false;
+                }
+            }
+
+            foreach (Cell blockCell in getAllCellsInBlock(currentCellLocation)) {
+                if (blockCell.domain.Count == 0 && !blockCell.isFixed) {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         // Remove a value from all the domains of the cells in the row,column and block of a cell
