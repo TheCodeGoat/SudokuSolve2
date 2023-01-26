@@ -1,14 +1,16 @@
-﻿namespace Sudoku {
+﻿using System.Collections;
+
+namespace Sudoku {
 
     class Sudoku {
 
-        private List<List<Cell>> cells; // Cells (rows) in the sudoku
+        private Hashtable cells; // Cells (rows) in the sudoku
         private Location currentCellLocation; // Current cell of the search
         private int currentValue; // Current value of the search
 
         public Sudoku(List<List<int>> sudokuInput) {
 
-            cells = new List<List<Cell>>();
+            cells = new Hashtable();
             currentCellLocation = new Location(0, 0);
             currentValue = 0;
 
@@ -27,9 +29,9 @@
 
                     // If value is 0, then add an empty cell with an initial domain, else add the fixed value
                     if (value == 0) {
-                        cells[y][x] = new Cell(initialDomain, value, false);
+                        cells.Add(new Location(x, y), new Cell(initialDomain, value, false));
                     } else {
-                        cells[y][x] = new Cell(new List<int>(), value, true);
+                        cells.Add(new Location(x, y), new Cell(new List<int>(), value, true));
                     }
 
                 }
@@ -40,25 +42,31 @@
 
         }
 
-        private List<Cell> getAllCellsInRow(int row) {
+        private Cell[] getAllCellsInRow(int row) {
 
-            return cells[row];
+            Cell[] rowCells = new Cell[9];
 
-        }
-
-        private List<Cell> getAllCellsInColumn(int column) {
-
-            List<Cell> cellsInColumn = new List<Cell>();
-
-            for (int row = 0; row < 9; row++) {
-                cellsInColumn.Add(cells[row][column]);
+            for (int x = 0; x < 9; x++) {
+                rowCells[x] = (Cell) cells[new Location(x, row)];
             }
 
-            return cellsInColumn;
+            return rowCells;
 
         }
 
-        private List<Cell> getAllCellsInBlock(Location cellLocation) {
+        private Cell[] getAllCellsInColumn(int column) {
+
+            Cell[] columnCells = new Cell[9];
+
+            for (int y = 0; y < 9; y++) {
+                columnCells[y] = (Cell) cells[new Location(column, y)];
+            }
+
+            return columnCells;
+
+        }
+
+        private Cell[] getAllCellsInBlock(Location cellLocation) {
 
             Location getBlockLocationFromCellLocation(Location cellLocation) {
                 return new Location(
@@ -66,13 +74,15 @@
                 (int)Math.Floor((decimal)(cellLocation.y / 3)));
             }
 
-           List<Cell> cellsInBlock = new List<Cell>();
+           Cell[] cellsInBlock = new Cell[9];
            Location blockLocation = getBlockLocationFromCellLocation(cellLocation);
 
             for (int x = blockLocation.x * 3; x < blockLocation.x * 3 + 3; x++) {
 
                 for (int y = blockLocation.y * 3; y < blockLocation.y * 3 + 3; y++) {
-                    cellsInBlock.Add(cells[y][x]);
+
+                    cellsInBlock[y * x + x] = (Cell) cells[new Location(x, y)];
+
                 }
 
             }
@@ -88,7 +98,7 @@
 
                 for (int y = 0; y < 9; y++) {
 
-                    Cell cell = cells[y][x]
+                    Cell cell = (Cell) cells[new Location(x, y)];
 ;
                     if (cell.value != 0) {
                         removeFromDomains(new Location(x, y), cell.value);
@@ -103,7 +113,7 @@
         private int findNextPartialSolution() {
 
             // Find the next possible value for the current cell
-            int nextElementInDomain = cells[currentCellLocation.y][currentCellLocation.x].getNextElementInDomain(currentValue);
+            int nextElementInDomain = ((Cell) cells[currentCellLocation]).getNextElementInDomain(currentValue);
             return nextElementInDomain;
 
         }
@@ -186,7 +196,7 @@
                 if (currentValue == 0) {
 
                     // Readd the current cell value to the domains since we are not going to tuse this value anymore
-                    addToDomains(currentCellLocation, cells[currentCellLocation.y][currentCellLocation.x].value);
+                    addToDomains(currentCellLocation, (Cell) cells[currentCellLocation].value);
 
                     // Set the current cell location and value to the previous element on the stack
                     (Location, int) previous = chronologicalBackTrackingStack.Pop();
