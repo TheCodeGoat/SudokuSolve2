@@ -197,7 +197,7 @@ namespace Sudoku {
                 if (currentValue == 0) {
 
                     // Readd the current cell value to the domains since we are not going to tuse this value anymore
-                    addToDomains(currentCellLocation, (Cell) cells[currentCellLocation].value);
+                    addToDomains(currentCellLocation, ((Cell) cells[currentCellLocation]).value);
 
                     // Set the current cell location and value to the previous element on the stack
                     (Location, int) previous = chronologicalBackTrackingStack.Pop();
@@ -223,7 +223,7 @@ namespace Sudoku {
                     {
                         foreach(int j in Enumerable.Range(xb,8))
                         {
-                            if (!cells[i][j].isFixed)
+                            if (!((Cell)cells[new Location(i, j)]).isFixed)
                             {
                                 currentCellLocation = new Location(j,i);
                                 newLocation = true;
