@@ -1,5 +1,6 @@
 ﻿namespace Sudoku {
-
+    
+    using System.Linq;
     class Sudoku {
 
         private List<List<Cell>> cells; // Cells (rows) in the sudoku
@@ -203,10 +204,31 @@
                     
                     chronologicalBackTrackingStack.Push((currentCellLocation, currentValue));   // Add current cell value to the stack
                     removeFromDomains(currentCellLocation, currentValue);                       // Update the domains
+                    int x, y;
+                    x = currentCellLocation.x;
+                    y = currentCellLocation.y;
+                    bool newLocation = false;
+                    foreach(int i in Enumerable.Range(y,8))
+                    {
+                        foreach(int j in Enumerable.Range(x,8))
+                        {
+                            if (!cells[i][j].isFixed)
+                            {
+                                currentCellLocation = new Location(j,i);
+                                newLocation = true;
+                                break;
+                            }
+                        }
 
-
-                    currentCellLocation = 
-                    // TODO: currentCellLocation = next cell location
+                        if(newLocation)
+                            {
+                                break;
+                            }
+                    }
+                    if(!newLocation)
+                    {
+                        //TODO: Stop running the application, all locations have been filled in, print puzzle
+                    }
 
                 }
 
