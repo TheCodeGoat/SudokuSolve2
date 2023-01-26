@@ -4,7 +4,7 @@
 
         private List<List<Cell>> cells; // Cells (rows) in the sudoku
         private Location currentCellLocation; // Current cell of the search
-        private int currentValue; // Current value of the search
+        private int currentValue; // Current value of the search    ~?Wouldn't calling it a score make more sense
 
         public Sudoku(List<List<int>> sudokuInput) {
 
@@ -204,6 +204,8 @@
                     chronologicalBackTrackingStack.Push((currentCellLocation, currentValue));   // Add current cell value to the stack
                     removeFromDomains(currentCellLocation, currentValue);                       // Update the domains
 
+
+                    currentCellLocation = 
                     // TODO: currentCellLocation = next cell location
 
                 }
