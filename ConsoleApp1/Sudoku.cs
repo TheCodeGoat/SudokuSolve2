@@ -2,11 +2,12 @@
 
 namespace Sudoku {
 
+    using System.Linq;
     class Sudoku {
 
         private Hashtable cells; // Cells (rows) in the sudoku
         private Location currentCellLocation; // Current cell of the search
-        private int currentValue; // Current value of the search
+        private int currentValue; // Current value of the search    ~?Wouldn't calling it a score make more sense
 
         public Sudoku(List<List<int>> sudokuInput) {
 
@@ -213,8 +214,32 @@ namespace Sudoku {
                     
                     chronologicalBackTrackingStack.Push((currentCellLocation, currentValue));   // Add current cell value to the stack
                     removeFromDomains(currentCellLocation, currentValue);                       // Update the domains
-
-                    // TODO: currentCellLocation = next cell location
+                    int x, y, xb;
+                    x = currentCellLocation.x;
+                    y = currentCellLocation.y;
+                    xb = x;
+                    bool newLocation = false;
+                    foreach(int i in Enumerable.Range(y,8))
+                    {
+                        foreach(int j in Enumerable.Range(xb,8))
+                        {
+                            if (!cells[i][j].isFixed)
+                            {
+                                currentCellLocation = new Location(j,i);
+                                newLocation = true;
+                                break;
+                            }
+                        }
+                        xb = 0;
+                        if(newLocation)
+                            {
+                                break;
+                            }
+                    }
+                    if(!newLocation)
+                    {
+                        //TODO: Stop running the application, all locations have been filled in, print puzzle
+                    }
 
                 }
 
