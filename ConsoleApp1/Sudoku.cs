@@ -32,7 +32,7 @@ namespace Sudoku {
 
                     // If value is 0, then add an empty cell with an initial domain, else add the fixed value
                     if (value == 0) {
-                        cells.Add(location, new Cell(initialDomain, value, false, location));
+                        cells.Add(location, new Cell(new List<int>(initialDomain), value, false, location));
                     } else {
                         cells.Add(location, new Cell(new List<int>(), value, true, location));
                     }
@@ -40,7 +40,9 @@ namespace Sudoku {
                 }
 
             }
+
             makeNodeConsistent(); 
+
         }
 
         private Cell[] getAllCellsInRow(int row) {
@@ -116,6 +118,7 @@ namespace Sudoku {
             Cell cell = (Cell)cells[currentCellLocation];
             int nextElementInDomain = cell.getNextElementInDomain(currentValue);
             return nextElementInDomain;
+
         }
 
         private bool forwardCheckIsValid() {
@@ -147,20 +150,23 @@ namespace Sudoku {
         private void removeFromDomains(Location cellLocation, int value) {
 
             foreach (Cell rowCell in getAllCellsInRow(cellLocation.y)) {
-
-                rowCell.domain.Remove(value);
-                
+                if(!rowCell.location.equals(cellLocation)) {
+                    rowCell.domain.Remove(value);
+                }
             }
             
-            /*
             foreach (Cell columnCell in getAllCellsInColumn(cellLocation.x)) {
-                columnCell.domain.Remove(value);
+                if (!columnCell.location.equals(cellLocation)) {
+                    columnCell.domain.Remove(value);
+                }
             }
 
             foreach (Cell blockCell in getAllCellsInBlock(cellLocation)) {
-                blockCell.domain.Remove(value);
-            }*/
-            printSudokuDomains();
+                if (!blockCell.location.equals(cellLocation)) {
+                    blockCell.domain.Remove(value);
+                }
+            }
+            
         }
 
         // Add a value to all the domains of the cells in the row,column and block of a cell
@@ -186,11 +192,7 @@ namespace Sudoku {
                 for(int x = 1; x <= 9; x++)
                 {
                     Cell xyCell = (Cell) cells[new Location(x-1, y-1)];
-                    //Console.Write(xyCell.value + " ");
-
-                    //string domainString = "";
-
-                    Console.Write(xyCell.domain.ToString() + " ");
+                    Console.Write(xyCell.value + " ");
 
                     if (x%3 == 0)
                     {
@@ -234,27 +236,32 @@ namespace Sudoku {
 
         private Location getNextCellLocation() {
 
-            int x, y, xb;
+            int x, y;
             x = currentCellLocation.x;
             y = currentCellLocation.y;
-            xb = x;
 
-            foreach (int i in Enumerable.Range(y, 8)) {
+            while (true) {
 
-                foreach (int j in Enumerable.Range(xb, 8)) {
-
-                    Cell cell = (Cell) cells[new Location(j, i)];
-
-                    if (!cell.isFixed) {
-                        return new Location(j, i);
-                    }
-
+                if (x < 8) {
+                    x++;
+                }
+                
+                else if (y < 8) {
+                    x = 0;
+                    y++;
                 }
 
-                xb = 0;
-            }
+                else {
+                    return new Location(-1, -1);
+                }
 
-            return new Location(-1, -1);
+                Cell cell = (Cell) cells[new Location(x, y)];
+
+                if (!cell.isFixed) {
+                    return new Location(x, y);
+                }
+
+            }
 
         }
 
@@ -273,6 +280,8 @@ namespace Sudoku {
                  
                 // If no solution was found for the current cell then backtrack
                 if (currentValue == 0) {
+
+                    Console.WriteLine("Partial solution empty");
 
                     // Readd the current cell value to the domains since we are not going to tuse this value anymore
                     addToDomains(currentCellLocation, ((Cell) cells[currentCellLocation]).value);
@@ -298,17 +307,26 @@ namespace Sudoku {
                     removeFromDomains(currentCellLocation, currentValue);                       // Update the domains
                     Location nextCellLocation = getNextCellLocation();                          // Get next cell location
 
+                    Cell currentCell = (Cell)cells[currentCellLocation];
+                    currentCell.value = currentValue;
+
                     if (nextCellLocation.equals(new Location(-1, -1))) {
                         solved = true;
                         break;
                     }
 
                     currentCellLocation = nextCellLocation;
+                    currentValue = 0;
 
                 }
 
-            }
+                else {
+                    Console.WriteLine("Forward check invalid");
+                }
 
+                printSudoku();
+
+            }
 
         }
 
