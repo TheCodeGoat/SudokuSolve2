@@ -7,7 +7,7 @@ namespace Sudoku {
 
         private Hashtable cells; // Cells (rows) in the sudoku
         private Location currentCellLocation; // Current cell of the search
-        private int currentValue; // Current value of the search    ~?Wouldn't calling it a score make more sense
+        private int currentValue; // Current value of the search    ~?Wouldn't calling it a score make more sense ~Is has nothing to do with score, its just to remember the current value we're trying
 
         public Sudoku(List<List<int>> sudokuInput) {
 
@@ -75,14 +75,16 @@ namespace Sudoku {
                 (int)Math.Floor((decimal)(cellLocation.y / 3)));
             }
 
-           Cell[] cellsInBlock = new Cell[9];
-           Location blockLocation = getBlockLocationFromCellLocation(cellLocation);
+            Cell[] cellsInBlock = new Cell[9];
+            Location blockLocation = getBlockLocationFromCellLocation(cellLocation);
+            int index = 0;
 
             for (int x = blockLocation.x * 3; x < blockLocation.x * 3 + 3; x++) {
 
                 for (int y = blockLocation.y * 3; y < blockLocation.y * 3 + 3; y++) {
 
-                    cellsInBlock[y * x + x] = (Cell) cells[new Location(x, y)];
+                    cellsInBlock[index] = (Cell) cells[new Location(x, y)];
+                    index++;
 
                 }
 
@@ -102,6 +104,11 @@ namespace Sudoku {
                     Cell cell = (Cell) cells[new Location(x, y)];
 ;
                     if (cell.value != 0) {
+
+                        if (cell.value == 4) {
+                            Console.WriteLine("Debug");
+                        }
+
                         removeFromDomains(new Location(x, y), cell.value);
                     }
 
@@ -114,7 +121,8 @@ namespace Sudoku {
         private int findNextPartialSolution() {
 
             // Find the next possible value for the current cell
-            int nextElementInDomain = ((Cell) cells[currentCellLocation]).getNextElementInDomain(currentValue);
+            Cell cell = (Cell)cells[currentCellLocation];
+            int nextElementInDomain = cell.getNextElementInDomain(currentValue);
             return nextElementInDomain;
 
         }
@@ -214,11 +222,13 @@ namespace Sudoku {
                     
                     chronologicalBackTrackingStack.Push((currentCellLocation, currentValue));   // Add current cell value to the stack
                     removeFromDomains(currentCellLocation, currentValue);                       // Update the domains
+                    
                     int x, y, xb;
                     x = currentCellLocation.x;
                     y = currentCellLocation.y;
                     xb = x;
                     bool newLocation = false;
+
                     foreach(int i in Enumerable.Range(y,8))
                     {
                         foreach(int j in Enumerable.Range(xb,8))
@@ -238,7 +248,7 @@ namespace Sudoku {
                     }
                     if(!newLocation)
                     {
-                        //TODO: Stop running the application, all locations have been filled in, print puzzle
+                        solved = true;
                     }
 
                 }

@@ -11,10 +11,10 @@ namespace Sudoku {
             this.isFixed = isFixed;
         }
 
-        public int getNextElementInDomain(int startValue) {
+        public int getNextElementInDomain(int currentValue) {
 
             foreach (int domainValue in domain) {
-                if (domainValue >= startValue) {
+                if (domainValue > currentValue) {
                     return domainValue;
                 }
             }
