@@ -147,10 +147,11 @@ namespace Sudoku {
         private void removeFromDomains(Location cellLocation, int value) {
 
             foreach (Cell rowCell in getAllCellsInRow(cellLocation.y)) {
-                rowCell.domain.Remove(value);
-                printSudoku();
-            }
 
+                rowCell.domain.Remove(value);
+                
+            }
+            
             /*
             foreach (Cell columnCell in getAllCellsInColumn(cellLocation.x)) {
                 columnCell.domain.Remove(value);
@@ -159,7 +160,7 @@ namespace Sudoku {
             foreach (Cell blockCell in getAllCellsInBlock(cellLocation)) {
                 blockCell.domain.Remove(value);
             }*/
-
+            printSudokuDomains();
         }
 
         // Add a value to all the domains of the cells in the row,column and block of a cell
@@ -192,6 +193,33 @@ namespace Sudoku {
                     Console.Write(xyCell.domain.ToString() + " ");
 
                     if (x%3 == 0)
+                    {
+                        Console.Write(" ");
+                    }
+                }
+                Console.Write("\n");
+                if(y%3 == 0)
+                    {
+                        Console.Write("\n");
+                    }
+            }
+        }
+        public void printSudokuDomains()
+        {
+            for(int y = 1; y <= 9; y++)
+            {
+                for(int x = 1; x <= 9; x++)
+                {
+                    Cell xyCell = (Cell) cells[new Location(x-1, y-1)];
+
+                    Console.Write("(");
+                    foreach(int value in xyCell.domain)
+                    {
+                        Console.Write(" "+ value);
+                    }
+                    Console.Write(") ");
+
+                    if(x%3 == 0)
                     {
                         Console.Write(" ");
                     }
