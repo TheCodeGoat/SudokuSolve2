@@ -10,6 +10,8 @@ namespace Sudoku {
 <<<<<<< Updated upstream
         private int currentValue; // Current value of the search
 =======
+        private int currentValue; // Current value of the search 
+>>>>>>> Stashed changes
 
         public Sudoku(List<List<int>> sudokuInput) {
 
