@@ -7,11 +7,8 @@ namespace Sudoku {
 
         private Hashtable cells; // Cells (rows) in the sudoku
         private Location currentCellLocation; // Current cell of the search
-<<<<<<< Updated upstream
-        private int currentValue; // Current value of the search
-=======
         private int currentValue; // Current value of the search 
->>>>>>> Stashed changes
+
 
         public Sudoku(List<List<int>> sudokuInput) {
 
