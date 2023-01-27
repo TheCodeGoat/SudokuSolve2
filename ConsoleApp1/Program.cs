@@ -49,6 +49,7 @@ namespace Sudoku {
             Sudoku sudoku = new Sudoku(sudokuInput);
             Console.WriteLine("Unsolved sudoku:");
             sudoku.printSudoku();
+            sudoku.printSudokuDomains();
             Console.WriteLine("Solving!!!!");
             sudoku.solve();
 

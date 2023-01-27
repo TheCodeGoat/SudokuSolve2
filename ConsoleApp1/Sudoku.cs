@@ -151,24 +151,27 @@ namespace Sudoku {
 
             foreach (Cell rowCell in getAllCellsInRow(cellLocation.y)) {
                 if (!rowCell.location.equals(cellLocation)) {
-                    // HIER GEBLEVEN
-                    if (addToChangedDomainsList && rowCell.domain.Contains()) { changedDomains.Add(rowCell.location); }
-                    rowCell.domain.Remove(value);
+                    bool remove = rowCell.domain.Remove(value);
+                    if (addToChangedDomainsList && remove) 
+                    { changedDomains.Add(rowCell.location); }
+                    
                     
                 }
             }
             
             foreach (Cell columnCell in getAllCellsInColumn(cellLocation.x)) {
                 if (!columnCell.location.equals(cellLocation)) {
-                    columnCell.domain.Remove(value);
-                    if (addToChangedDomainsList) { changedDomains.Add(columnCell.location); }
+                    bool remove = columnCell.domain.Remove(value);
+                    if (addToChangedDomainsList && remove) 
+                    { changedDomains.Add(columnCell.location); }
                 }
             }
 
             foreach (Cell blockCell in getAllCellsInBlock(cellLocation)) {
                 if (!blockCell.location.equals(cellLocation)) {
-                    blockCell.domain.Remove(value);
-                    if (addToChangedDomainsList) { changedDomains.Add(blockCell.location); }
+                    bool remove = blockCell.domain.Remove(value);
+                    if (addToChangedDomainsList && remove) 
+                    { changedDomains.Add(blockCell.location); }
                 }
             }
 
