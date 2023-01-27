@@ -148,6 +148,7 @@ namespace Sudoku {
 
             foreach (Cell rowCell in getAllCellsInRow(cellLocation.y)) {
                 rowCell.domain.Remove(value);
+                printSudoku();
             }
 
             /*
@@ -184,8 +185,13 @@ namespace Sudoku {
                 for(int x = 1; x <= 9; x++)
                 {
                     Cell xyCell = (Cell) cells[new Location(x-1, y-1)];
-                    Console.Write(xyCell.value + " ");
-                    if(x%3 == 0)
+                    //Console.Write(xyCell.value + " ");
+
+                    //string domainString = "";
+
+                    Console.Write(xyCell.domain.ToString() + " ");
+
+                    if (x%3 == 0)
                     {
                         Console.Write(" ");
                     }
