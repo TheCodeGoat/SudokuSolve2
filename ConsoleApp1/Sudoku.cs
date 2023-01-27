@@ -208,7 +208,22 @@ namespace Sudoku {
                 for(int x = 1; x <= 9; x++)
                 {
                     Cell xyCell = (Cell) cells[new Location(x-1, y-1)];
-                    Console.Write(xyCell.value + " ");
+
+                    if (xyCell.isFixed) {
+                        Console.ForegroundColor = ConsoleColor.Blue;
+                        Console.Write(xyCell.value + " ");
+                        Console.ForegroundColor = ConsoleColor.White;
+                    }
+
+                    else if (xyCell.location.equals(currentCellLocation)) {
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.Write(xyCell.value + " ");
+                        Console.ForegroundColor = ConsoleColor.White;
+                    }
+                    
+                    else {
+                        Console.Write(xyCell.value + " ");
+                    }
 
                     if (x%3 == 0)
                     {
