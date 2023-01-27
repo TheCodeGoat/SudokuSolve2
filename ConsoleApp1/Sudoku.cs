@@ -7,7 +7,8 @@ namespace Sudoku {
 
         private Hashtable cells; // Cells (rows) in the sudoku
         private Location currentCellLocation; // Current cell of the search
-        private int currentValue; // Current value of the search
+        private int currentValue; // Current value of the search 
+
 
         public Sudoku(List<List<int>> sudokuInput) {
 
@@ -39,9 +40,7 @@ namespace Sudoku {
                 }
 
             }
-
             makeNodeConsistent(); 
-
         }
 
         private Cell[] getAllCellsInRow(int row) {
@@ -53,7 +52,6 @@ namespace Sudoku {
             }
 
             return rowCells;
-
         }
 
         private Cell[] getAllCellsInColumn(int column) {
@@ -65,7 +63,6 @@ namespace Sudoku {
             }
 
             return columnCells;
-
         }
 
         private Cell[] getAllCellsInBlock(Location cellLocation) {
@@ -92,7 +89,6 @@ namespace Sudoku {
             }
 
             return cellsInBlock;
-
         }
 
         private void makeNodeConsistent() {
@@ -120,7 +116,6 @@ namespace Sudoku {
             Cell cell = (Cell)cells[currentCellLocation];
             int nextElementInDomain = cell.getNextElementInDomain(currentValue);
             return nextElementInDomain;
-
         }
 
         private bool forwardCheckIsValid() {
@@ -181,6 +176,26 @@ namespace Sudoku {
                 blockCell.domain.Add(value);
             }
 
+        }
+        public void printSudoku()
+        {
+            for(int y = 1; y <= 9; y++)
+            {
+                for(int x = 1; x <= 9; x++)
+                {
+                    Cell xyCell = (Cell) cells[new Location(x-1, y-1)];
+                    Console.Write(xyCell.value + " ");
+                    if(x%3 == 0)
+                    {
+                        Console.Write(" ");
+                    }
+                }
+                Console.Write("\n");
+                if(y%3 == 0)
+                    {
+                        Console.Write("\n");
+                    }
+            }
         }
 
         private Location getNextCellLocation() {
@@ -259,6 +274,7 @@ namespace Sudoku {
                 }
 
             }
+
 
         }
 
