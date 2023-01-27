@@ -43,10 +43,13 @@ namespace Sudoku {
         }
 
         public static void Main(String[] args) {
-
+            Console.WriteLine("Please input sudoku:");
             String rawSudokuInput = Console.ReadLine();
             List<List<int>> sudokuInput = convertRawSudokuInput(rawSudokuInput);
             Sudoku sudoku = new Sudoku(sudokuInput);
+            Console.WriteLine("Unsolved sudoku:");
+            sudoku.printSudoku();
+            Console.WriteLine("Solving!!!!");
             sudoku.solve();
 
         }
