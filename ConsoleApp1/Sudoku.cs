@@ -27,12 +27,13 @@ namespace Sudoku {
                 for (int x = 0; x < sudokuInput[y].Count; x++) {
 
                     int value = sudokuInput[y][x];
+                    Location location = new Location(x, y);
 
                     // If value is 0, then add an empty cell with an initial domain, else add the fixed value
                     if (value == 0) {
-                        cells.Add(new Location(x, y), new Cell(initialDomain, value, false));
+                        cells.Add(location, new Cell(initialDomain, value, false, location));
                     } else {
-                        cells.Add(new Location(x, y), new Cell(new List<int>(), value, true));
+                        cells.Add(location, new Cell(new List<int>(), value, true, location));
                     }
 
                 }
@@ -104,11 +105,6 @@ namespace Sudoku {
                     Cell cell = (Cell) cells[new Location(x, y)];
 ;
                     if (cell.value != 0) {
-
-                        if (cell.value == 4) {
-                            Console.WriteLine("Debug");
-                        }
-
                         removeFromDomains(new Location(x, y), cell.value);
                     }
 
@@ -159,13 +155,14 @@ namespace Sudoku {
                 rowCell.domain.Remove(value);
             }
 
+            /*
             foreach (Cell columnCell in getAllCellsInColumn(cellLocation.x)) {
                 columnCell.domain.Remove(value);
             }
 
             foreach (Cell blockCell in getAllCellsInBlock(cellLocation)) {
                 blockCell.domain.Remove(value);
-            }
+            }*/
 
         }
 
@@ -197,7 +194,7 @@ namespace Sudoku {
 
                 foreach (int j in Enumerable.Range(xb, 8)) {
 
-                    Cell cell = (Cell) cells[new Location(i, j)];
+                    Cell cell = (Cell) cells[new Location(j, i)];
 
                     if (!cell.isFixed) {
                         return new Location(j, i);
