@@ -212,7 +212,7 @@ namespace Sudoku {
 
                 foreach (int j in Enumerable.Range(xb, 8)) {
 
-                    Cell cell = (Cell) cells[new Location(i, j)];
+                    Cell cell = (Cell) cells[new Location(j, i)];
 
                     if (!cell.isFixed) {
                         return new Location(j, i);
@@ -277,6 +277,7 @@ namespace Sudoku {
                 }
 
             }
+
 
         }
 
