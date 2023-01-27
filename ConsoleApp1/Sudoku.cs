@@ -188,8 +188,6 @@ namespace Sudoku {
 
         public void solve() {
 
-            makeNodeConsistent();
-
             // Stack with the location and value of the previous succesful partial solution
             Stack<(Location, int)> chronologicalBackTrackingStack = new Stack<(Location, int)>();
             bool solved = false;
