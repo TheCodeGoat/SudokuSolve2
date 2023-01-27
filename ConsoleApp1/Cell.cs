@@ -2,6 +2,7 @@ namespace Sudoku {
      class Cell {
 
         public List<int> domain;
+        public List<int> valuesTried;
         public int value;
         public bool isFixed;
         public Location location;
@@ -11,12 +12,13 @@ namespace Sudoku {
             this.value = value;
             this.isFixed = isFixed;
             this.location = location;
+            this.valuesTried = new List<int>();
         }
 
         public int getNextElementInDomain(int currentValue) {
 
             foreach (int domainValue in domain) {
-                if (domainValue > currentValue) {
+                if (!valuesTried.Contains(domainValue)) {
                     return domainValue;
                 }
             }

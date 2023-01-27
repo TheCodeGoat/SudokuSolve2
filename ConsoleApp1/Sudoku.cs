@@ -324,7 +324,9 @@ namespace Sudoku {
                 // Find the first possible partial solution with the currentCellLocation and the currentValue
                 int partialSolution = findNextPartialSolution();
                 currentValue = partialSolution;
-                 
+                Cell currentCell = (Cell)cells[currentCellLocation];
+                currentCell.valuesTried.Add(currentValue);
+
                 // BACKTRACKING
                 // If no solution was found for the current cell then backtrack
                 if (currentValue == 0) {
@@ -332,6 +334,7 @@ namespace Sudoku {
                     Console.WriteLine("Backtracking!!");
                     Cell current = (Cell) cells[currentCellLocation];
                     current.value = 0;
+                    current.valuesTried.Clear();
                     // Set the current cell location and value to the previous element on the stack
                     (Location, int, HashSet<Location>) previous = chronologicalBackTrackingStack.Pop();
                     currentCellLocation = previous.Item1;
@@ -356,7 +359,7 @@ namespace Sudoku {
                                     
                     Location nextCellLocation = getNextCellLocation();                          // Get next cell location
 
-                    Cell currentCell = (Cell)cells[currentCellLocation];
+                    currentCell = (Cell)cells[currentCellLocation];
                     currentCell.value = currentValue;
                     currentCell.domain.Remove(currentValue);
                     currentCell.domain.Add(currentValue);
