@@ -2,13 +2,12 @@
 
 namespace Sudoku {
 
-    using System.Linq;
     class Sudoku {
 
         private Hashtable cells; // Cells (rows) in the sudoku
         private Location currentCellLocation; // Current cell of the search
         private int currentValue; // Current value of the search 
-
+        
 
         public Sudoku(List<List<int>> sudokuInput) {
 
@@ -124,7 +123,6 @@ namespace Sudoku {
         private bool forwardCheckIsValid() {
 
             // Check if there is a domain that is empty for cells in the same row, column, and block as the current cell
-
             foreach (Cell rowCell in getAllCellsInRow(currentCellLocation.y)) {
                 if (rowCell.domain.Count == 0 && !rowCell.isFixed) {
                     return false;
@@ -147,41 +145,56 @@ namespace Sudoku {
         }
 
         // Remove a value from all the domains of the cells in the row,column and block of a cell
-        private void removeFromDomains(Location cellLocation, int value) {
+        private HashSet<Location> removeFromDomains(Location cellLocation, int value, bool addToChangedDomainsList = false) {
+
+            HashSet < Location > changedDomains = new HashSet<Location> ();
 
             foreach (Cell rowCell in getAllCellsInRow(cellLocation.y)) {
-                if(!rowCell.location.equals(cellLocation)) {
+                if (!rowCell.location.equals(cellLocation)) {
+                    // HIER GEBLEVEN
+                    if (addToChangedDomainsList && rowCell.domain.Contains()) { changedDomains.Add(rowCell.location); }
                     rowCell.domain.Remove(value);
+                    
                 }
             }
             
             foreach (Cell columnCell in getAllCellsInColumn(cellLocation.x)) {
                 if (!columnCell.location.equals(cellLocation)) {
                     columnCell.domain.Remove(value);
+                    if (addToChangedDomainsList) { changedDomains.Add(columnCell.location); }
                 }
             }
 
             foreach (Cell blockCell in getAllCellsInBlock(cellLocation)) {
                 if (!blockCell.location.equals(cellLocation)) {
                     blockCell.domain.Remove(value);
+                    if (addToChangedDomainsList) { changedDomains.Add(blockCell.location); }
                 }
             }
+
+            return changedDomains;
             
         }
 
         // Add a value to all the domains of the cells in the row,column and block of a cell
-        private void addToDomains(Location cellLocation, int value) {
+        private void addToDomains(Location cellLocation, int value, HashSet<Location> changedDomains) {
 
             foreach (Cell rowCell in getAllCellsInRow(cellLocation.y)) {
-                rowCell.domain.Add(value);
+                if (!rowCell.domain.Contains(value) && changedDomains.Contains(rowCell.location)) {
+                   rowCell.domain.Add(value);
+                }
             }
 
             foreach (Cell columnCell in getAllCellsInColumn(cellLocation.x)) {
-                columnCell.domain.Add(value);
+                if (!columnCell.domain.Contains(value) && changedDomains.Contains(columnCell.location)) {
+                    columnCell.domain.Add(value);
+                }
             }
 
             foreach (Cell blockCell in getAllCellsInBlock(cellLocation)) {
-                blockCell.domain.Add(value);
+                if (!blockCell.domain.Contains(value) && changedDomains.Contains(blockCell.location)) {
+                    blockCell.domain.Add(value);
+                }
             }
 
         }
@@ -206,6 +219,7 @@ namespace Sudoku {
                     }
             }
         }
+
         public void printSudokuDomains()
         {
             for(int y = 1; y <= 9; y++)
@@ -268,7 +282,7 @@ namespace Sudoku {
         public void solve() {
 
             // Stack with the location and value of the previous succesful partial solution
-            Stack<(Location, int)> chronologicalBackTrackingStack = new Stack<(Location, int)>();
+            Stack<(Location, int, HashSet<Location>)> chronologicalBackTrackingStack = new Stack<(Location, int, HashSet<Location>)>();
             bool solved = false;
 
             // Loop while solution is not found
@@ -278,33 +292,33 @@ namespace Sudoku {
                 int partialSolution = findNextPartialSolution();
                 currentValue = partialSolution;
                  
+                // BACKTRACKING
                 // If no solution was found for the current cell then backtrack
                 if (currentValue == 0) {
 
                     Console.WriteLine("Partial solution empty");
-
-                    // Readd the current cell value to the domains since we are not going to tuse this value anymore
-                    addToDomains(currentCellLocation, ((Cell) cells[currentCellLocation]).value);
-
+                    
                     // Set the current cell location and value to the previous element on the stack
-                    (Location, int) previous = chronologicalBackTrackingStack.Pop();
+                    (Location, int, HashSet<Location>) previous = chronologicalBackTrackingStack.Pop();
                     currentCellLocation = previous.Item1;
                     currentValue = previous.Item2;
 
-                    // Also readd the value of the previous (now current) cell to the domains,
-                    // since we are also not going to use this value anymore.
-                    addToDomains(currentCellLocation, currentValue);
+                    if (currentValue != 0) {
+                        addToDomains(currentCellLocation, currentValue, previous.Item3);
+                    }
                     
                     continue;
 
                 }
 
+                // VALID PARTIAL SOLUTION
                 // If the forward check is valid push to the stack and go to the next cell,
                 // otherwise keep searching for a valid partial solution
                 if (forwardCheckIsValid()) {
-                    
-                    chronologicalBackTrackingStack.Push((currentCellLocation, currentValue));   // Add current cell value to the stack
-                    removeFromDomains(currentCellLocation, currentValue);                       // Update the domains
+
+                    HashSet<Location> changedDomains = removeFromDomains(currentCellLocation, currentValue, true);// Update the domains
+                    chronologicalBackTrackingStack.Push((currentCellLocation, currentValue, changedDomains));   // Add current cell value to the stack
+                                    
                     Location nextCellLocation = getNextCellLocation();                          // Get next cell location
 
                     Cell currentCell = (Cell)cells[currentCellLocation];
@@ -325,6 +339,8 @@ namespace Sudoku {
                 }
 
                 printSudoku();
+                printSudokuDomains();
+                Console.WriteLine("==================");
 
             }
 
