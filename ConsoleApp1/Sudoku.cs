@@ -12,7 +12,10 @@ namespace Sudoku {
         public Sudoku(List<List<int>> sudokuInput) {
 
             cells = new Hashtable();
-            currentCellLocation = new Location(0, 0);
+
+            
+            
+
             currentValue = 0;
 
             // Create and populate an initial domain with 1-9
@@ -38,6 +41,13 @@ namespace Sudoku {
 
                 }
 
+            }
+            
+            currentCellLocation = new Location(0, 0);
+            Cell cellCheck = (Cell) cells[currentCellLocation];
+            if( cellCheck.isFixed)
+            {
+                currentCellLocation = getNextCellLocation();
             }
 
             makeNodeConsistent(); 
@@ -214,17 +224,9 @@ namespace Sudoku {
                         Console.Write(xyCell.value + " ");
                         Console.ForegroundColor = ConsoleColor.White;
                     }
-
-                    else if (xyCell.location.equals(currentCellLocation)) {
-                        Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.Write(xyCell.value + " ");
-                        Console.ForegroundColor = ConsoleColor.White;
-                    }
-                    
-                    else {
+                    else{
                         Console.Write(xyCell.value + " ");
                     }
-
                     if (x%3 == 0)
                     {
                         Console.Write(" ");
@@ -331,7 +333,7 @@ namespace Sudoku {
                 // If no solution was found for the current cell then backtrack
                 if (currentValue == 0) {
 
-                    Console.WriteLine("Backtracking!!");
+                    //Console.WriteLine("Backtracking!!");
                     Cell current = (Cell) cells[currentCellLocation];
                     current.value = 0;
                     current.valuesTried.Clear();
@@ -343,8 +345,8 @@ namespace Sudoku {
                     if (currentValue != 0) {
                         addToDomains(currentCellLocation, currentValue, previous.Item3);
                     }
-                    printSudoku();
-                    printSudokuDomains();
+                    //printSudoku();
+                    //printSudokuDomains();
                     continue;
 
                 }
@@ -375,12 +377,12 @@ namespace Sudoku {
                 }
 
                 else {
-                    Console.WriteLine("Forward check invalid");
+                    //Console.WriteLine("Forward check invalid");
                 }
 
-                printSudoku();
-                printSudokuDomains();
-                Console.WriteLine("==================");
+                //printSudoku();
+                //printSudokuDomains();
+                //Console.WriteLine("==================");
 
             }
 

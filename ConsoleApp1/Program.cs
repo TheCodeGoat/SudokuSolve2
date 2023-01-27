@@ -48,10 +48,12 @@ namespace Sudoku {
             List<List<int>> sudokuInput = convertRawSudokuInput(rawSudokuInput);
             Sudoku sudoku = new Sudoku(sudokuInput);
             Console.WriteLine("Unsolved sudoku:");
+            Console.WriteLine("White text represent changable numbers, while blue ones are fixed.");
             sudoku.printSudoku();
-            sudoku.printSudokuDomains();
-            Console.WriteLine("Solving!!!!");
+            Console.WriteLine("Solving!\n");
             sudoku.solve();
+            Console.WriteLine("Solved!");
+            sudoku.printSudoku();
             Console.WriteLine("Press Enter to exit...");
             Console.ReadLine();
 
