@@ -7,7 +7,7 @@ namespace Sudoku {
 
         private Hashtable cells; // Cells (rows) in the sudoku
         private Location currentCellLocation; // Current cell of the search
-        private int currentValue; // Current value of the search    ~?Wouldn't calling it a score make more sense ~Is has nothing to do with score, its just to remember the current value we're trying
+        private int currentValue; // Current value of the search
 
         public Sudoku(List<List<int>> sudokuInput) {
 
@@ -15,7 +15,7 @@ namespace Sudoku {
             currentCellLocation = new Location(0, 0);
             currentValue = 0;
 
-            // Create and pupulate an initial domain with 1-9
+            // Create and populate an initial domain with 1-9
             List<int> initialDomain = new List<int>();
             for (int i = 1; i <= 9; i++) {
                 initialDomain.Add(i);
@@ -186,6 +186,32 @@ namespace Sudoku {
 
         }
 
+        private Location getNextCellLocation() {
+
+            int x, y, xb;
+            x = currentCellLocation.x;
+            y = currentCellLocation.y;
+            xb = x;
+
+            foreach (int i in Enumerable.Range(y, 8)) {
+
+                foreach (int j in Enumerable.Range(xb, 8)) {
+
+                    Cell cell = (Cell) cells[new Location(i, j)];
+
+                    if (!cell.isFixed) {
+                        return new Location(j, i);
+                    }
+
+                }
+
+                xb = 0;
+            }
+
+            return new Location(-1, -1);
+
+        }
+
         public void solve() {
 
             // Stack with the location and value of the previous succesful partial solution
@@ -209,6 +235,10 @@ namespace Sudoku {
                     (Location, int) previous = chronologicalBackTrackingStack.Pop();
                     currentCellLocation = previous.Item1;
                     currentValue = previous.Item2;
+
+                    // Also readd the value of the previous (now current) cell to the domains,
+                    // since we are also not going to use this value anymore.
+                    addToDomains(currentCellLocation, currentValue);
                     
                     continue;
 
@@ -220,34 +250,14 @@ namespace Sudoku {
                     
                     chronologicalBackTrackingStack.Push((currentCellLocation, currentValue));   // Add current cell value to the stack
                     removeFromDomains(currentCellLocation, currentValue);                       // Update the domains
-                    
-                    int x, y, xb;
-                    x = currentCellLocation.x;
-                    y = currentCellLocation.y;
-                    xb = x;
-                    bool newLocation = false;
+                    Location nextCellLocation = getNextCellLocation();                          // Get next cell location
 
-                    foreach(int i in Enumerable.Range(y,8))
-                    {
-                        foreach(int j in Enumerable.Range(xb,8))
-                        {
-                            if (!((Cell)cells[new Location(i, j)]).isFixed)
-                            {
-                                currentCellLocation = new Location(j,i);
-                                newLocation = true;
-                                break;
-                            }
-                        }
-                        xb = 0;
-                        if(newLocation)
-                            {
-                                break;
-                            }
-                    }
-                    if(!newLocation)
-                    {
+                    if (nextCellLocation.equals(new Location(-1, -1))) {
                         solved = true;
+                        break;
                     }
+
+                    currentCellLocation = nextCellLocation;
 
                 }
 
