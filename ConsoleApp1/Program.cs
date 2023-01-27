@@ -52,6 +52,8 @@ namespace Sudoku {
             sudoku.printSudokuDomains();
             Console.WriteLine("Solving!!!!");
             sudoku.solve();
+            Console.WriteLine("Press Enter to exit...");
+            Console.ReadLine();
 
         }
 
